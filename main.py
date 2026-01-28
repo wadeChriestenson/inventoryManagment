@@ -37,3 +37,4 @@ class Product:
 
 p1 = Product(111111,"Wheel Hub",250.45,10)
 
+print(p1)
