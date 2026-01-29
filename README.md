@@ -35,7 +35,8 @@
 
 ### Attributes
 - products (list)
-- Methods
+
+### Methods
 - add_product()
 - find_product()
 - show_inventory()
