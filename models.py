@@ -11,7 +11,14 @@ def create_db_connection():
     create_connection.commit()
     create_connection.close()
 
-
+def get_new_product_info():
+    new_product_id = input('Enter Product Id: ')
+    new_product_name = input('Enter Product Name: ')
+    new_product_price = input('Enter Product Price: ')
+    new_product_quantity = input('Enter Product Quantity: ')
+    new_product = [new_product_id, new_product_name, new_product_price, new_product_quantity]
+    print(new_product)
+    return new_product
 
 class Product:
     def __init__(self,product_id,name,price,quantity):
@@ -28,6 +35,9 @@ class Product:
 
 
     def product_to_db(self):
+
+        create_connection1 = None
+
         try:
             create_connection1 = sqlite3.connect('inventory_mgmt.db', timeout=10)
             create_cursor = create_connection1.cursor()
@@ -45,6 +55,10 @@ class Product:
 
         except sqlite3.IntegrityError:
             print('Product Already Exists')
+
+        finally:
+            if create_connection1:
+                create_connection1.close()
 
 
 
