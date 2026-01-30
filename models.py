@@ -11,44 +11,32 @@ def create_db_connection():
     create_connection.commit()
     create_connection.close()
 
-def get_new_product_info():
-    new_product_id = input('Enter Product Id: ')
-    new_product_name = input('Enter Product Name: ')
-    new_product_price = input('Enter Product Price: ')
-    new_product_quantity = input('Enter Product Quantity: ')
-    new_product = [new_product_id, new_product_name, new_product_price, new_product_quantity]
-    print(new_product)
-    return new_product
 
 class Product:
-    def __init__(self,product_id,name,price,quantity):
-        self.product_id = product_id,
-        self.name = name,
-        self.price = price,
-        self.quantity = quantity
+    def __init__(self):
+        self.new_product_info = []
 
-        global product
-        product = [int(product_id),
-                   str(name).replace(' ','').strip(),
-                   float(price),
-                   int(quantity)]
+    def add_new_product(self):
 
-
-    def product_to_db(self):
+        product_id = input('Enter Product Id: ')
+        name = input('Enter Product Name: ')
+        price = input('Enter Product Price: ')
+        quantity = input('Enter Product Quantity: ')
+        self.new_product_info.extend([product_id,name,price,quantity])
 
         create_connection1 = None
 
         try:
             create_connection1 = sqlite3.connect('inventory_mgmt.db', timeout=10)
             create_cursor = create_connection1.cursor()
-            create_cursor.execute('INSERT INTO products (product_id, name, price, quantity) VALUES (?, ?, ?, ?)', product)
+            create_cursor.execute('INSERT INTO products (product_id, name, price, quantity) VALUES (?, ?, ?, ?)', self.new_product_info)
             create_connection1.commit()
             create_connection1.close()
 
-            print(f'Product Successfully Added:\nProduct Id: {self.product_id}\n'
-                  f'Description: {self.name}\n'
-                  f'Price: ${self.price}\n'
-                  f'Quantity: {self.quantity}')
+            print(f'Product Successfully Added:\nProduct Id: {self.new_product_info[0]}\n'
+                  f'Description: {self.new_product_info[1]}\n'
+                  f'Price: ${self.new_product_info[2]}\n'
+                  f'Quantity: {self.new_product_info[3]}')
 
         except sqlite3.OperationalError:
             print('Database is locked')
@@ -60,7 +48,62 @@ class Product:
             if create_connection1:
                 create_connection1.close()
 
+    def run_menu(self):
+        create_db_connection()
 
+        # Controls whether the program continues running
+        user_exit = True
 
+        while user_exit:
+            # Display the menu options
+            print('''-------------------------------- MENU -------------------------------------
+        
+            1. Add a new product                2. Sell a product
+        
+            3. Search product by product id     4. Update price of product
+        
+            5. Display all products             0. Exit
+        
+            -------------------------------------------------------------------------------''')
+
+            try:
+                # User chooses a menu option
+                user_selection = int(input('Select a number from the menu to continue: \n'))
+
+                # match-case handles the menu logic cleanly
+                match user_selection:
+
+                    case 1:
+                        # Add a new product into inventory
+                        print('Enter new product information.')
+                        self.add_new_product()
+
+                    case 2:
+                        # Sell a product by product id and update amount in inventory
+                        print('Enter product id to sell.')
+
+                    case 3:
+                        # Find and display a product by product id
+                        print('Enter product id to find.')
+
+                    case 4:
+                        # Update the price of an existing product
+                        print('Enter product id to update.')
+                    case 5:
+                        # Display all products stored in the inventory
+                        print('Display all products.')
+
+                    case 0:
+                        # Stop the loop and exit program
+                        user_exit = False
+                        break
+
+                    case _:
+                        # Handles numbers that are not valid menu choices
+                        print('Invalid input! Please select an item from the menu.')
+
+            except ValueError:
+                # Handles any non-numeric entry in the menu
+                print('Invalid input! Please select an item from the menu.')
 
 
